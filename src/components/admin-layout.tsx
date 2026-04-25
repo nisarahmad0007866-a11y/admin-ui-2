@@ -30,13 +30,13 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
   const SidebarInner = (
     <aside className="flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex items-center gap-2 px-6 py-6 border-b border-sidebar-border">
-        <div className="h-9 w-9 rounded-md bg-gold flex items-center justify-center">
-          <Building2 className="h-5 w-5 text-sidebar" />
+      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-sidebar-border">
+        <div className="h-8 w-8 rounded-md bg-gold flex items-center justify-center">
+          <Building2 className="h-4 w-4 text-gold-foreground" />
         </div>
-        <div>
-          <div className="text-base font-semibold tracking-tight leading-none">BookMyHall</div>
-          <div className="text-[10px] uppercase tracking-[0.2em] text-gold font-medium mt-1">Admin</div>
+        <div className="text-sm font-semibold tracking-tight leading-none">
+          BookMyHall
+          <div className="text-[9px] uppercase tracking-[0.22em] text-sidebar-foreground/45 font-medium mt-1">Admin Panel</div>
         </div>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
