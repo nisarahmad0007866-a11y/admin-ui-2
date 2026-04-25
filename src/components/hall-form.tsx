@@ -338,9 +338,7 @@ function PhotoBlock({ label, Icon, images, onAdd, onRemove }: {
     Array.from(files).slice(0, remaining).forEach(file => {
       if (!file.type.startsWith("image/")) { toast.error("Only images allowed"); return; }
       if (file.size > 2 * 1024 * 1024) { toast.error(`${file.name} is over 2 MB`); return; }
-      const reader = new FileReader();
-      reader.onload = () => onAdd(String(reader.result));
-      reader.readAsDataURL(file);
+      onAdd(URL.createObjectURL(file));
     });
   };
 
