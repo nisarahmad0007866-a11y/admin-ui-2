@@ -23,13 +23,13 @@ function EditHallPage() {
   }
 
   return (
-    <div className="p-6 lg:p-10 max-w-4xl mx-auto">
+    <div className="p-6 lg:p-8 max-w-3xl mx-auto">
       <Link to="/dashboard/halls/$hallId" params={{ hallId: hall.id }} className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
         <ArrowLeft className="h-4 w-4 mr-1" /> Back to hall
       </Link>
       <div className="mb-6">
-        <div className="text-xs uppercase tracking-[0.25em] text-gold mb-2">Edit</div>
-        <h1 className="font-serif text-4xl">{hall.name}</h1>
+        <h1 className="text-2xl font-semibold">Edit · {hall.name}</h1>
+        <p className="text-sm text-muted-foreground mt-1">Update any section and save.</p>
       </div>
       <HallForm
         mode="edit"
