@@ -299,7 +299,7 @@ function Section({ number, title, subtitle, children }: { number: number; title:
           {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
         </div>
       </div>
-      <div className="space-y-4 sm:pl-10">{children}</div>
+      <div className="space-y-4">{children}</div>
     </section>
   );
 }
