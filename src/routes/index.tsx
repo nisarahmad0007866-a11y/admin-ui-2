@@ -4,7 +4,7 @@ import { auth, ADMIN_EMAIL, ADMIN_PASSWORD } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Building2, Lock, Mail, ShieldCheck } from "lucide-react";
+import { Building2, Lock, Mail, ShieldCheck } from "@/components/icons";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
