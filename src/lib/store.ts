@@ -46,22 +46,34 @@ export interface Booking {
 const HALLS_KEY = "bmh_halls_v2";
 const BOOKINGS_KEY = "bmh_bookings_v2";
 const AUTH_KEY = "bmh_admin_auth_v1";
+const inrFormatter = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+
+let seeded = false;
+let hallsCache: Hall[] | null = null;
+let bookingsCache: Booking[] | null = null;
 
 export const ADMIN_EMAIL = "admin@bookmyhall.com";
 export const ADMIN_PASSWORD = "admin123";
 
 function read<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
+  if (key === HALLS_KEY && hallsCache) return hallsCache as T;
+  if (key === BOOKINGS_KEY && bookingsCache) return bookingsCache as T;
   try {
     const raw = localStorage.getItem(key);
     if (!raw) return fallback;
-    return JSON.parse(raw) as T;
+    const parsed = JSON.parse(raw) as T;
+    if (key === HALLS_KEY) hallsCache = parsed as Hall[];
+    if (key === BOOKINGS_KEY) bookingsCache = parsed as Booking[];
+    return parsed;
   } catch {
     return fallback;
   }
 }
 function write<T>(key: string, value: T) {
   if (typeof window === "undefined") return;
+  if (key === HALLS_KEY) hallsCache = value as Hall[];
+  if (key === BOOKINGS_KEY) bookingsCache = value as Booking[];
   localStorage.setItem(key, JSON.stringify(value));
   window.dispatchEvent(new CustomEvent("bmh:store"));
 }
@@ -242,6 +254,8 @@ const SEED_BOOKINGS: Booking[] = [
 
 function ensureSeed() {
   if (typeof window === "undefined") return;
+  if (seeded) return;
+  seeded = true;
   if (!localStorage.getItem(HALLS_KEY)) localStorage.setItem(HALLS_KEY, JSON.stringify(SEED_HALLS));
   if (!localStorage.getItem(BOOKINGS_KEY)) localStorage.setItem(BOOKINGS_KEY, JSON.stringify(SEED_BOOKINGS));
 }
@@ -292,7 +306,7 @@ export const auth = {
 };
 
 export function formatINR(n: number) {
-  return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n);
+  return inrFormatter.format(n);
 }
 
 export function hallTypeLabel(t: HallType) {
