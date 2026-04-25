@@ -291,13 +291,11 @@ export function HallForm({ mode, existing, onSaved, onCancel }: Props) {
 
 function Section({ number, title, subtitle, children }: { number: number; title: string; subtitle?: string; children: React.ReactNode }) {
   return (
-    <section className="px-4 sm:px-6 py-5 sm:py-6 border-b last:border-b-0">
-      <div className="flex items-start gap-3 mb-5">
-        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-bold">{number}</span>
-        <div className="min-w-0">
-          <h3 className="text-base font-semibold leading-tight">{title}</h3>
-          {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
-        </div>
+    <section className="px-4 sm:px-6 py-5 border-b last:border-b-0">
+      <div className="flex items-baseline gap-2 mb-4">
+        <span className="text-[10px] font-mono text-muted-foreground tabular-nums">{String(number).padStart(2, "0")}</span>
+        <h3 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-foreground">{title}</h3>
+        {subtitle && <span className="text-xs text-muted-foreground hidden sm:inline">— {subtitle}</span>}
       </div>
       <div className="space-y-4">{children}</div>
     </section>
