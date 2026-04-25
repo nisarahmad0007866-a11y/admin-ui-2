@@ -9,7 +9,7 @@ import {
   Leaf, Drumstick, UtensilsCrossed, Car, Snowflake, Mic2, Music, Wifi,
   Heart, Zap, ChefHat, User, Phone, Mail, Headset, Users, Sun, Moon,
   Home, MapPinned,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
 
 interface Props {
