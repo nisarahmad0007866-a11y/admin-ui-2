@@ -31,15 +31,13 @@ function LoginPage() {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      if (auth.login(email, password)) {
-        toast.success("Welcome back, Admin");
-        navigate({ to: "/dashboard" });
-      } else {
-        toast.error("Invalid credentials");
-      }
+    if (auth.login(email, password)) {
+      toast.success("Signed in");
+      navigate({ to: "/dashboard" });
+    } else {
+      toast.error("Invalid credentials");
       setLoading(false);
-    }, 350);
+    }
   };
 
   return (
