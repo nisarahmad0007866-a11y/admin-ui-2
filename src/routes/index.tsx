@@ -8,6 +8,7 @@ import { Building2, Lock, Mail, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "BookMyHall — Admin Sign In" },

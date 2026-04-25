@@ -3,10 +3,11 @@ import { AdminLayout } from "@/components/admin-layout";
 import { auth, store } from "@/lib/store";
 
 export const Route = createFileRoute("/dashboard")({
+  ssr: false,
   beforeLoad: () => {
-    store.init();
-    if (typeof window !== "undefined" && !auth.isLoggedIn()) {
-      throw redirect({ to: "/" });
+    if (typeof window !== "undefined") {
+      store.init();
+      if (!auth.isLoggedIn()) throw redirect({ to: "/" });
     }
   },
   component: () => (
