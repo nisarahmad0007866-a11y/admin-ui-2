@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { HallForm } from "@/components/hall-form";
-import { ArrowLeft, Copy, KeyRound } from "lucide-react";
+import { ArrowLeft, Copy, KeyRound } from "@/components/icons";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
