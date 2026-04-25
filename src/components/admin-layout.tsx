@@ -5,12 +5,18 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const nav = [
+type NavItem = {
+  to: "/dashboard" | "/dashboard/halls" | "/dashboard/bookings" | "/dashboard/customers";
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+};
+const nav: NavItem[] = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/dashboard/halls", label: "Halls", icon: Building2 },
   { to: "/dashboard/bookings", label: "Bookings", icon: CalendarCheck },
   { to: "/dashboard/customers", label: "Customers", icon: Users },
-] as const;
+];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
