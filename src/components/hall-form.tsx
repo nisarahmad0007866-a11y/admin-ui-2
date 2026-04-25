@@ -1,14 +1,11 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Hall, HallType, FoodType, store, uid, genOwnerId, genOwnerPin } from "@/lib/store";
 import { Plus, X, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 
 interface Props {
   mode: "create" | "edit";
@@ -16,6 +13,20 @@ interface Props {
   onSaved: (hall: Hall) => void;
   onCancel: () => void;
 }
+
+const HALL_TYPES: { value: HallType; label: string }[] = [
+  { value: "wedding", label: "Wedding Hall" },
+  { value: "lawn", label: "Lawn" },
+  { value: "banquet", label: "Banquet Hall" },
+];
+
+const FOOD_TYPES: { value: FoodType; label: string }[] = [
+  { value: "veg", label: "Veg only" },
+  { value: "non-veg", label: "Non-Veg only" },
+  { value: "both", label: "Veg & Non-Veg" },
+];
+
+const COMMON_FACILITIES = ["Parking", "AC", "Stage", "DJ", "WiFi", "Bridal Room", "Power Backup", "Catering Kitchen"];
 
 export function HallForm({ mode, existing, onSaved, onCancel }: Props) {
   const [name, setName] = useState(existing?.name ?? "");
@@ -38,10 +49,12 @@ export function HallForm({ mode, existing, onSaved, onCancel }: Props) {
   const [indoorInput, setIndoorInput] = useState("");
   const [outdoorInput, setOutdoorInput] = useState("");
 
-  const addFacility = () => {
+  const toggleFacility = (f: string) => {
+    setFacilities(facilities.includes(f) ? facilities.filter(x => x !== f) : [...facilities, f]);
+  };
+  const addCustomFacility = () => {
     const v = facilityInput.trim();
-    if (!v) return;
-    if (facilities.includes(v)) return;
+    if (!v || facilities.includes(v)) { setFacilityInput(""); return; }
     setFacilities([...facilities, v]);
     setFacilityInput("");
   };
@@ -49,8 +62,8 @@ export function HallForm({ mode, existing, onSaved, onCancel }: Props) {
     const v = (kind === "in" ? indoorInput : outdoorInput).trim();
     if (!v) return;
     const list = kind === "in" ? indoorImages : outdoorImages;
-    if (list.length >= 4) { toast.error("Max 4 images"); return; }
-    try { new URL(v); } catch { toast.error("Invalid URL"); return; }
+    if (list.length >= 4) { toast.error("Max 4 photos"); return; }
+    try { new URL(v); } catch { toast.error("Please paste a valid image URL"); return; }
     if (kind === "in") { setIndoorImages([...indoorImages, v]); setIndoorInput(""); }
     else { setOutdoorImages([...outdoorImages, v]); setOutdoorInput(""); }
   };
@@ -61,7 +74,7 @@ export function HallForm({ mode, existing, onSaved, onCancel }: Props) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setAddress(`Lat ${pos.coords.latitude.toFixed(4)}, Lng ${pos.coords.longitude.toFixed(4)}`);
-        toast.success("Location captured — refine the address manually if needed");
+        toast.success("Location captured — refine if needed");
       },
       () => toast.error("Could not fetch location"),
     );
@@ -70,7 +83,7 @@ export function HallForm({ mode, existing, onSaved, onCancel }: Props) {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !ownerName || !ownerEmail || !ownerNumber || !address || !guests || !priceDay || !priceNight) {
-      toast.error("Please fill all required fields");
+      toast.error("Please fill all required fields (marked *)");
       return;
     }
     const hall: Hall = {
@@ -93,145 +106,215 @@ export function HallForm({ mode, existing, onSaved, onCancel }: Props) {
   };
 
   return (
-    <form onSubmit={submit} className="space-y-6">
-      <Card className="p-6 space-y-5">
-        <SectionTitle>Basic info</SectionTitle>
-        <Grid2>
-          <Field label="Hall name *"><Input value={name} onChange={e => setName(e.target.value)} placeholder="The Grand Pavilion" /></Field>
-          <Field label="Hall type *">
-            <Select value={type} onValueChange={(v) => setType(v as HallType)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="wedding">Wedding Hall</SelectItem>
-                <SelectItem value="lawn">Lawn</SelectItem>
-                <SelectItem value="banquet">Banquet Hall</SelectItem>
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label="Capacity (guests) *"><Input type="number" min={1} value={guests} onChange={e => setGuests(e.target.value === "" ? "" : Number(e.target.value))} /></Field>
-          <Field label="Food type *">
-            <Select value={foodType} onValueChange={(v) => setFoodType(v as FoodType)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="veg">Vegetarian</SelectItem>
-                <SelectItem value="non-veg">Non-Vegetarian</SelectItem>
-                <SelectItem value="both">Both Veg & Non-Veg</SelectItem>
-              </SelectContent>
-            </Select>
-          </Field>
-        </Grid2>
-      </Card>
+    <form onSubmit={submit} className="bg-card border rounded-lg">
+      {/* 1. Basic */}
+      <Section number={1} title="Basic information">
+        <Field label="Hall name" required>
+          <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. The Grand Pavilion" />
+        </Field>
 
-      <Card className="p-6 space-y-5">
-        <SectionTitle>Owner & support</SectionTitle>
-        <Grid2>
-          <Field label="Owner name *"><Input value={ownerName} onChange={e => setOwnerName(e.target.value)} /></Field>
-          <Field label="Owner email *"><Input type="email" value={ownerEmail} onChange={e => setOwnerEmail(e.target.value)} placeholder="owner@example.com" /></Field>
-          <Field label="Owner phone *"><Input value={ownerNumber} onChange={e => setOwnerNumber(e.target.value)} placeholder="+91 ..." /></Field>
-          <Field label="Support phone"><Input value={supportNumber} onChange={e => setSupportNumber(e.target.value)} placeholder="Defaults to owner phone" /></Field>
-        </Grid2>
-      </Card>
-
-      <Card className="p-6 space-y-5">
-        <SectionTitle>Pricing</SectionTitle>
-        <Grid2>
-          <Field label="Day price (₹) *"><Input type="number" min={0} value={priceDay} onChange={e => setPriceDay(e.target.value === "" ? "" : Number(e.target.value))} /></Field>
-          <Field label="Night price (₹) *"><Input type="number" min={0} value={priceNight} onChange={e => setPriceNight(e.target.value === "" ? "" : Number(e.target.value))} /></Field>
-        </Grid2>
-      </Card>
-
-      <Card className="p-6 space-y-5">
-        <SectionTitle>Address</SectionTitle>
-        <div className="space-y-3">
-          <div className="flex gap-2">
-            <Input value={address} onChange={e => setAddress(e.target.value)} placeholder="Street, area, landmark *" />
-            <Button type="button" variant="outline" onClick={autoFetchAddress}><MapPin className="h-4 w-4 mr-2" />Auto</Button>
-          </div>
-          <Input value={city} onChange={e => setCity(e.target.value)} placeholder="City" />
-        </div>
-      </Card>
-
-      <Card className="p-6 space-y-5">
-        <SectionTitle>Facilities</SectionTitle>
-        <div className="flex gap-2">
-          <Input value={facilityInput} onChange={e => setFacilityInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addFacility(); } }} placeholder="e.g. Valet Parking, AC, Stage" />
-          <Button type="button" variant="outline" onClick={addFacility}><Plus className="h-4 w-4 mr-1" />Add</Button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {facilities.map(f => (
-            <Badge key={f} variant="secondary" className="pl-3 pr-1.5 py-1">
-              {f}
-              <button type="button" onClick={() => setFacilities(facilities.filter(x => x !== f))} className="ml-1.5 hover:text-destructive">
-                <X className="h-3 w-3" />
+        <Field label="Hall type" required>
+          <div className="grid grid-cols-3 gap-2">
+            {HALL_TYPES.map(t => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => setType(t.value)}
+                className={`h-11 rounded-md border text-sm font-medium transition-colors ${
+                  type === t.value
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-input bg-background hover:bg-muted"
+                }`}
+              >
+                {t.label}
               </button>
-            </Badge>
-          ))}
-          {facilities.length === 0 && <p className="text-xs text-muted-foreground">No facilities added yet.</p>}
-        </div>
-      </Card>
-
-      <Card className="p-6 space-y-5">
-        <SectionTitle>Policies</SectionTitle>
-        <Textarea value={policies} onChange={e => setPolicies(e.target.value)} rows={4} placeholder="Cancellation, advance, decor, music timing…" />
-      </Card>
-
-      <Card className="p-6 space-y-5">
-        <SectionTitle>Photos (URLs)</SectionTitle>
-        <p className="text-xs text-muted-foreground -mt-2">Up to 4 indoor and 4 outdoor images. Paste image URLs.</p>
-
-        <div className="space-y-3">
-          <div className="text-sm font-medium">Indoor ({indoorImages.length}/4)</div>
-          <div className="flex gap-2">
-            <Input value={indoorInput} onChange={e => setIndoorInput(e.target.value)} placeholder="https://…" />
-            <Button type="button" variant="outline" onClick={() => addImage("in")}><Plus className="h-4 w-4 mr-1" />Add</Button>
+            ))}
           </div>
-          <ImageThumbs images={indoorImages} onRemove={(i) => setIndoorImages(indoorImages.filter((_, idx) => idx !== i))} />
-        </div>
+        </Field>
 
-        <div className="space-y-3 pt-3 border-t">
-          <div className="text-sm font-medium">Outdoor ({outdoorImages.length}/4)</div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Field label="Capacity (guests)" required>
+            <Input type="number" min={1} value={guests} onChange={e => setGuests(e.target.value === "" ? "" : Number(e.target.value))} placeholder="e.g. 500" />
+          </Field>
+          <Field label="Food type" required>
+            <div className="grid grid-cols-3 gap-1.5">
+              {FOOD_TYPES.map(f => (
+                <button key={f.value} type="button" onClick={() => setFoodType(f.value)}
+                  className={`h-11 rounded-md border text-xs font-medium ${foodType === f.value ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background hover:bg-muted"}`}>
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </Field>
+        </div>
+      </Section>
+
+      {/* 2. Owner */}
+      <Section number={2} title="Owner & contact">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Field label="Owner name" required>
+            <Input value={ownerName} onChange={e => setOwnerName(e.target.value)} />
+          </Field>
+          <Field label="Owner email" required hint="Used for owner login">
+            <Input type="email" value={ownerEmail} onChange={e => setOwnerEmail(e.target.value)} placeholder="owner@example.com" />
+          </Field>
+          <Field label="Owner phone" required>
+            <Input value={ownerNumber} onChange={e => setOwnerNumber(e.target.value)} placeholder="+91 ..." />
+          </Field>
+          <Field label="Support phone" hint="Customer help number (optional)">
+            <Input value={supportNumber} onChange={e => setSupportNumber(e.target.value)} placeholder="Same as owner if blank" />
+          </Field>
+        </div>
+      </Section>
+
+      {/* 3. Pricing */}
+      <Section number={3} title="Pricing">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Field label="Day price (₹)" required>
+            <Input type="number" min={0} value={priceDay} onChange={e => setPriceDay(e.target.value === "" ? "" : Number(e.target.value))} placeholder="e.g. 75000" />
+          </Field>
+          <Field label="Night price (₹)" required>
+            <Input type="number" min={0} value={priceNight} onChange={e => setPriceNight(e.target.value === "" ? "" : Number(e.target.value))} placeholder="e.g. 95000" />
+          </Field>
+        </div>
+      </Section>
+
+      {/* 4. Address */}
+      <Section number={4} title="Address">
+        <Field label="Street, area, landmark" required>
           <div className="flex gap-2">
-            <Input value={outdoorInput} onChange={e => setOutdoorInput(e.target.value)} placeholder="https://…" />
-            <Button type="button" variant="outline" onClick={() => addImage("out")}><Plus className="h-4 w-4 mr-1" />Add</Button>
+            <Input value={address} onChange={e => setAddress(e.target.value)} placeholder="Plot 24, Linking Road, Bandra West" />
+            <Button type="button" variant="outline" onClick={autoFetchAddress} className="shrink-0">
+              <MapPin className="h-4 w-4 sm:mr-2" /><span className="hidden sm:inline">Auto-fetch</span>
+            </Button>
           </div>
-          <ImageThumbs images={outdoorImages} onRemove={(i) => setOutdoorImages(outdoorImages.filter((_, idx) => idx !== i))} />
-        </div>
-      </Card>
+        </Field>
+        <Field label="City">
+          <Input value={city} onChange={e => setCity(e.target.value)} />
+        </Field>
+      </Section>
 
-      <div className="flex justify-end gap-3 pb-10">
-        <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
-        <Button type="submit" className="bg-primary hover:bg-primary/90">{mode === "create" ? "Create hall" : "Save changes"}</Button>
+      {/* 5. Facilities */}
+      <Section number={5} title="Facilities" hint="Tap to select common ones, or add your own.">
+        <div className="flex flex-wrap gap-2">
+          {COMMON_FACILITIES.map(f => {
+            const on = facilities.includes(f);
+            return (
+              <button key={f} type="button" onClick={() => toggleFacility(f)}
+                className={`h-9 px-3 rounded-full border text-xs font-medium ${on ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background hover:bg-muted"}`}>
+                {on ? "✓ " : "+ "}{f}
+              </button>
+            );
+          })}
+        </div>
+        <div className="flex gap-2 mt-3">
+          <Input value={facilityInput} onChange={e => setFacilityInput(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addCustomFacility(); } }}
+            placeholder="Add custom facility (press Enter)" />
+          <Button type="button" variant="outline" onClick={addCustomFacility}><Plus className="h-4 w-4" /></Button>
+        </div>
+        {facilities.filter(f => !COMMON_FACILITIES.includes(f)).length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {facilities.filter(f => !COMMON_FACILITIES.includes(f)).map(f => (
+              <span key={f} className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-secondary text-secondary-foreground text-xs">
+                {f}
+                <button type="button" onClick={() => toggleFacility(f)} className="hover:text-destructive"><X className="h-3 w-3" /></button>
+              </span>
+            ))}
+          </div>
+        )}
+      </Section>
+
+      {/* 6. Policies */}
+      <Section number={6} title="Policies" hint="Cancellation, advance, decor, music timings…">
+        <Textarea value={policies} onChange={e => setPolicies(e.target.value)} rows={3}
+          placeholder="e.g. 50% advance to confirm. Cancellation 30 days prior — full refund." />
+      </Section>
+
+      {/* 7. Photos */}
+      <Section number={7} title="Photos" hint="Paste image URLs · Max 4 indoor + 4 outdoor">
+        <PhotoBlock label={`Indoor (${indoorImages.length}/4)`}
+          inputValue={indoorInput} onInputChange={setIndoorInput}
+          onAdd={() => addImage("in")}
+          images={indoorImages}
+          onRemove={(i) => setIndoorImages(indoorImages.filter((_, idx) => idx !== i))} />
+        <div className="h-px bg-border my-5" />
+        <PhotoBlock label={`Outdoor (${outdoorImages.length}/4)`}
+          inputValue={outdoorInput} onInputChange={setOutdoorInput}
+          onAdd={() => addImage("out")}
+          images={outdoorImages}
+          onRemove={(i) => setOutdoorImages(outdoorImages.filter((_, idx) => idx !== i))} />
+      </Section>
+
+      {/* Sticky save bar */}
+      <div className="sticky bottom-0 flex items-center justify-between gap-3 px-6 py-4 border-t bg-card/95 backdrop-blur rounded-b-lg">
+        <span className="text-xs text-muted-foreground hidden sm:block">
+          {mode === "create" ? "Owner ID & PIN will be generated on save." : "Changes apply immediately."}
+        </span>
+        <div className="flex gap-2 ml-auto">
+          <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
+          <Button type="submit" className="bg-primary hover:bg-primary/90 min-w-[140px]">
+            {mode === "create" ? "Save & generate ID" : "Save changes"}
+          </Button>
+        </div>
       </div>
     </form>
   );
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h2 className="font-serif text-xl">{children}</h2>;
+function Section({ number, title, hint, children }: { number: number; title: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <section className="px-6 py-6 border-b last:border-b-0">
+      <div className="flex items-baseline gap-3 mb-5">
+        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold">{number}</span>
+        <div>
+          <h3 className="text-base font-semibold">{title}</h3>
+          {hint && <p className="text-xs text-muted-foreground mt-0.5">{hint}</p>}
+        </div>
+      </div>
+      <div className="space-y-4 pl-0 sm:pl-9">{children}</div>
+    </section>
+  );
 }
-function Grid2({ children }: { children: React.ReactNode }) {
-  return <div className="grid sm:grid-cols-2 gap-4">{children}</div>;
-}
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+
+function Field({ label, required, hint, children }: { label: string; required?: boolean; hint?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs uppercase tracking-wider text-muted-foreground">{label}</Label>
+      <Label className="text-sm font-medium">
+        {label}{required && <span className="text-destructive ml-0.5">*</span>}
+      </Label>
       {children}
+      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
 }
-function ImageThumbs({ images, onRemove }: { images: string[]; onRemove: (i: number) => void }) {
-  if (images.length === 0) return <p className="text-xs text-muted-foreground">No images yet.</p>;
+
+function PhotoBlock({ label, inputValue, onInputChange, onAdd, images, onRemove }: {
+  label: string; inputValue: string; onInputChange: (v: string) => void; onAdd: () => void;
+  images: string[]; onRemove: (i: number) => void;
+}) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-      {images.map((src, i) => (
-        <div key={i} className="relative group aspect-[4/3] rounded-md overflow-hidden border">
-          <img src={src} alt="" className="w-full h-full object-cover" />
-          <button type="button" onClick={() => onRemove(i)} className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <X className="h-3 w-3" />
-          </button>
+    <div>
+      <div className="text-sm font-medium mb-2">{label}</div>
+      <div className="flex gap-2">
+        <Input value={inputValue} onChange={e => onInputChange(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); onAdd(); } }}
+          placeholder="https://example.com/photo.jpg" />
+        <Button type="button" variant="outline" onClick={onAdd}><Plus className="h-4 w-4 sm:mr-1" /><span className="hidden sm:inline">Add</span></Button>
+      </div>
+      {images.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
+          {images.map((src, i) => (
+            <div key={i} className="relative group aspect-[4/3] rounded-md overflow-hidden border bg-muted">
+              <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
+              <button type="button" onClick={() => onRemove(i)}
+                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 focus:opacity-100">
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }
