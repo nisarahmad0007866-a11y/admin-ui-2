@@ -9,38 +9,169 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardHallsRouteImport } from './routes/dashboard.halls'
+import { Route as DashboardCustomersRouteImport } from './routes/dashboard.customers'
+import { Route as DashboardHallsIndexRouteImport } from './routes/dashboard.halls.index'
+import { Route as DashboardBookingsIndexRouteImport } from './routes/dashboard.bookings.index'
+import { Route as DashboardHallsNewRouteImport } from './routes/dashboard.halls.new'
+import { Route as DashboardBookingsBookingIdRouteImport } from './routes/dashboard.bookings.$bookingId'
+import { Route as DashboardHallsHallIdIndexRouteImport } from './routes/dashboard.halls.$hallId.index'
+import { Route as DashboardHallsHallIdEditRouteImport } from './routes/dashboard.halls.$hallId.edit'
 
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardHallsRoute = DashboardHallsRouteImport.update({
+  id: '/halls',
+  path: '/halls',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardCustomersRoute = DashboardCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardHallsIndexRoute = DashboardHallsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardHallsRoute,
+} as any)
+const DashboardBookingsIndexRoute = DashboardBookingsIndexRouteImport.update({
+  id: '/bookings/',
+  path: '/bookings/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardHallsNewRoute = DashboardHallsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => DashboardHallsRoute,
+} as any)
+const DashboardBookingsBookingIdRoute =
+  DashboardBookingsBookingIdRouteImport.update({
+    id: '/bookings/$bookingId',
+    path: '/bookings/$bookingId',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardHallsHallIdIndexRoute =
+  DashboardHallsHallIdIndexRouteImport.update({
+    id: '/$hallId/',
+    path: '/$hallId/',
+    getParentRoute: () => DashboardHallsRoute,
+  } as any)
+const DashboardHallsHallIdEditRoute =
+  DashboardHallsHallIdEditRouteImport.update({
+    id: '/$hallId/edit',
+    path: '/$hallId/edit',
+    getParentRoute: () => DashboardHallsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/customers': typeof DashboardCustomersRoute
+  '/dashboard/halls': typeof DashboardHallsRouteWithChildren
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
+  '/dashboard/halls/new': typeof DashboardHallsNewRoute
+  '/dashboard/bookings/': typeof DashboardBookingsIndexRoute
+  '/dashboard/halls/': typeof DashboardHallsIndexRoute
+  '/dashboard/halls/$hallId/edit': typeof DashboardHallsHallIdEditRoute
+  '/dashboard/halls/$hallId/': typeof DashboardHallsHallIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard/customers': typeof DashboardCustomersRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
+  '/dashboard/halls/new': typeof DashboardHallsNewRoute
+  '/dashboard/bookings': typeof DashboardBookingsIndexRoute
+  '/dashboard/halls': typeof DashboardHallsIndexRoute
+  '/dashboard/halls/$hallId/edit': typeof DashboardHallsHallIdEditRoute
+  '/dashboard/halls/$hallId': typeof DashboardHallsHallIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/customers': typeof DashboardCustomersRoute
+  '/dashboard/halls': typeof DashboardHallsRouteWithChildren
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/bookings/$bookingId': typeof DashboardBookingsBookingIdRoute
+  '/dashboard/halls/new': typeof DashboardHallsNewRoute
+  '/dashboard/bookings/': typeof DashboardBookingsIndexRoute
+  '/dashboard/halls/': typeof DashboardHallsIndexRoute
+  '/dashboard/halls/$hallId/edit': typeof DashboardHallsHallIdEditRoute
+  '/dashboard/halls/$hallId/': typeof DashboardHallsHallIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/dashboard/customers'
+    | '/dashboard/halls'
+    | '/dashboard/'
+    | '/dashboard/bookings/$bookingId'
+    | '/dashboard/halls/new'
+    | '/dashboard/bookings/'
+    | '/dashboard/halls/'
+    | '/dashboard/halls/$hallId/edit'
+    | '/dashboard/halls/$hallId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard/customers'
+    | '/dashboard'
+    | '/dashboard/bookings/$bookingId'
+    | '/dashboard/halls/new'
+    | '/dashboard/bookings'
+    | '/dashboard/halls'
+    | '/dashboard/halls/$hallId/edit'
+    | '/dashboard/halls/$hallId'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/dashboard/customers'
+    | '/dashboard/halls'
+    | '/dashboard/'
+    | '/dashboard/bookings/$bookingId'
+    | '/dashboard/halls/new'
+    | '/dashboard/bookings/'
+    | '/dashboard/halls/'
+    | '/dashboard/halls/$hallId/edit'
+    | '/dashboard/halls/$hallId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +179,113 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/halls': {
+      id: '/dashboard/halls'
+      path: '/halls'
+      fullPath: '/dashboard/halls'
+      preLoaderRoute: typeof DashboardHallsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/customers': {
+      id: '/dashboard/customers'
+      path: '/customers'
+      fullPath: '/dashboard/customers'
+      preLoaderRoute: typeof DashboardCustomersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/halls/': {
+      id: '/dashboard/halls/'
+      path: '/'
+      fullPath: '/dashboard/halls/'
+      preLoaderRoute: typeof DashboardHallsIndexRouteImport
+      parentRoute: typeof DashboardHallsRoute
+    }
+    '/dashboard/bookings/': {
+      id: '/dashboard/bookings/'
+      path: '/bookings'
+      fullPath: '/dashboard/bookings/'
+      preLoaderRoute: typeof DashboardBookingsIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/halls/new': {
+      id: '/dashboard/halls/new'
+      path: '/new'
+      fullPath: '/dashboard/halls/new'
+      preLoaderRoute: typeof DashboardHallsNewRouteImport
+      parentRoute: typeof DashboardHallsRoute
+    }
+    '/dashboard/bookings/$bookingId': {
+      id: '/dashboard/bookings/$bookingId'
+      path: '/bookings/$bookingId'
+      fullPath: '/dashboard/bookings/$bookingId'
+      preLoaderRoute: typeof DashboardBookingsBookingIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/halls/$hallId/': {
+      id: '/dashboard/halls/$hallId/'
+      path: '/$hallId'
+      fullPath: '/dashboard/halls/$hallId/'
+      preLoaderRoute: typeof DashboardHallsHallIdIndexRouteImport
+      parentRoute: typeof DashboardHallsRoute
+    }
+    '/dashboard/halls/$hallId/edit': {
+      id: '/dashboard/halls/$hallId/edit'
+      path: '/$hallId/edit'
+      fullPath: '/dashboard/halls/$hallId/edit'
+      preLoaderRoute: typeof DashboardHallsHallIdEditRouteImport
+      parentRoute: typeof DashboardHallsRoute
+    }
   }
 }
 
+interface DashboardHallsRouteChildren {
+  DashboardHallsNewRoute: typeof DashboardHallsNewRoute
+  DashboardHallsIndexRoute: typeof DashboardHallsIndexRoute
+  DashboardHallsHallIdEditRoute: typeof DashboardHallsHallIdEditRoute
+  DashboardHallsHallIdIndexRoute: typeof DashboardHallsHallIdIndexRoute
+}
+
+const DashboardHallsRouteChildren: DashboardHallsRouteChildren = {
+  DashboardHallsNewRoute: DashboardHallsNewRoute,
+  DashboardHallsIndexRoute: DashboardHallsIndexRoute,
+  DashboardHallsHallIdEditRoute: DashboardHallsHallIdEditRoute,
+  DashboardHallsHallIdIndexRoute: DashboardHallsHallIdIndexRoute,
+}
+
+const DashboardHallsRouteWithChildren = DashboardHallsRoute._addFileChildren(
+  DashboardHallsRouteChildren,
+)
+
+interface DashboardRouteChildren {
+  DashboardCustomersRoute: typeof DashboardCustomersRoute
+  DashboardHallsRoute: typeof DashboardHallsRouteWithChildren
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardBookingsBookingIdRoute: typeof DashboardBookingsBookingIdRoute
+  DashboardBookingsIndexRoute: typeof DashboardBookingsIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardCustomersRoute: DashboardCustomersRoute,
+  DashboardHallsRoute: DashboardHallsRouteWithChildren,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardBookingsBookingIdRoute: DashboardBookingsBookingIdRoute,
+  DashboardBookingsIndexRoute: DashboardBookingsIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
