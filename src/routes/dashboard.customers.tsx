@@ -3,7 +3,7 @@ import { useBookings, useHalls } from "@/hooks/use-store";
 import { formatINR } from "@/lib/store";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Mail, Phone, Search } from "lucide-react";
+import { Mail, Phone, Search } from "@/components/icons";
 import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 
