@@ -108,9 +108,11 @@ function LoginPage() {
               {loading ? "Signing in…" : "Sign in"}
             </Button>
 
-            <div className="rounded border bg-muted/40 px-3 py-2.5 text-xs text-muted-foreground">
-              <div className="font-medium text-foreground mb-0.5">Demo credentials</div>
-              <div className="font-mono text-[11px] text-foreground/80">{ADMIN_EMAIL} · {ADMIN_PASSWORD}</div>
+            <div className="rounded border bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground">
+              <details>
+                <summary className="cursor-pointer select-none font-medium text-foreground/80">Staff access only · view sample credentials</summary>
+                <div className="mt-1.5 font-mono text-foreground/70">{ADMIN_EMAIL} · {ADMIN_PASSWORD}</div>
+              </details>
             </div>
           </form>
 
