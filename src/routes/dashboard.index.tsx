@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useHalls, useBookings } from "@/hooks/use-store";
 import { formatINR, hallTypeLabel } from "@/lib/store";
 import { Card } from "@/components/ui/card";
-import { Building2, CalendarCheck, Clock, IndianRupee, ArrowRight, CheckCircle2, XCircle, Plus } from "lucide-react";
+import { Building2, CalendarCheck, Clock, IndianRupee, ArrowRight, CheckCircle2, XCircle, Plus } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
