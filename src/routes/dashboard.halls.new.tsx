@@ -56,13 +56,13 @@ function NewHallPage() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-3xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto pb-24">
       <Link to="/dashboard/halls" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
         <ArrowLeft className="h-4 w-4 mr-1" /> Back to halls
       </Link>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Add Hall</h1>
-        <p className="text-sm text-muted-foreground mt-1">Fill the 7 sections below. Owner ID & PIN are generated on save.</p>
+      <div className="mb-5">
+        <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Add hall</h1>
+        <p className="text-sm text-muted-foreground mt-1">Owner ID & PIN are generated on save.</p>
       </div>
       <HallForm
         mode="create"
