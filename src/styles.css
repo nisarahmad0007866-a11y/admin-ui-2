@@ -156,5 +156,17 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: var(--font-serif);
+    letter-spacing: -0.02em;
   }
 }
+
+@utility text-gold { color: var(--gold); }
+@utility bg-gold { background-color: var(--gold); }
+@utility border-gold { border-color: var(--gold); }
+
