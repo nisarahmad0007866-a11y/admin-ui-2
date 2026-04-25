@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { HallForm } from "@/components/hall-form";
 import { useHalls } from "@/hooks/use-store";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/dashboard/halls/$hallId/edit")({
