@@ -19,36 +19,40 @@ function NewHallPage() {
       navigator.clipboard.writeText(text); toast.success(`${label} copied`);
     };
     return (
-      <div className="p-6 lg:p-10 max-w-2xl mx-auto">
-        <Card className="p-8 text-center">
-          <div className="mx-auto h-14 w-14 rounded-full bg-success/10 flex items-center justify-center mb-4">
-            <KeyRound className="h-6 w-6 text-success" />
-          </div>
-          <h2 className="font-serif text-3xl mb-2">Hall added</h2>
-          <p className="text-muted-foreground mb-6">"{issued.name}" is now in the system. Share these credentials with the owner.</p>
-
-          <div className="grid sm:grid-cols-2 gap-4 mb-6 text-left">
-            <div className="rounded-md border bg-muted/40 p-4">
-              <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Owner ID</div>
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-2xl text-primary">{issued.ownerId}</span>
-                <Button variant="ghost" size="sm" onClick={() => copy(issued.ownerId, "Owner ID")}><Copy className="h-4 w-4" /></Button>
-              </div>
+      <div className="p-4 sm:p-6 lg:p-10 max-w-2xl mx-auto">
+        <Card className="p-6 sm:p-8">
+          <div className="flex items-center gap-3 mb-5 pb-5 border-b">
+            <div className="h-10 w-10 rounded bg-success/10 flex items-center justify-center shrink-0">
+              <KeyRound className="h-5 w-5 text-success" />
             </div>
-            <div className="rounded-md border bg-muted/40 p-4">
-              <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Owner PIN</div>
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-2xl text-gold">{issued.ownerPin}</span>
-                <Button variant="ghost" size="sm" onClick={() => copy(issued.ownerPin, "PIN")}><Copy className="h-4 w-4" /></Button>
-              </div>
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">Hall onboarded</h2>
+              <p className="text-xs text-muted-foreground">"{issued.name}" is live. Share these credentials with the owner securely.</p>
             </div>
           </div>
 
-          <div className="flex gap-3 justify-center">
-            <Link to="/dashboard/halls/$hallId" params={{ hallId: issued.hallId }}>
-              <Button>View hall</Button>
+          <div className="grid sm:grid-cols-2 gap-3 mb-6">
+            <div className="rounded border bg-muted/30 p-3.5">
+              <div className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground font-medium mb-1.5">Owner ID</div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-xl font-semibold tabular-nums">{issued.ownerId}</span>
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => copy(issued.ownerId, "Owner ID")}><Copy className="h-3.5 w-3.5" /></Button>
+              </div>
+            </div>
+            <div className="rounded border bg-muted/30 p-3.5">
+              <div className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground font-medium mb-1.5">Owner PIN</div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-xl font-semibold tabular-nums">{issued.ownerPin}</span>
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => copy(issued.ownerPin, "PIN")}><Copy className="h-3.5 w-3.5" /></Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Link to="/dashboard/halls/$hallId" params={{ hallId: issued.hallId }} className="flex-1">
+              <Button className="w-full">View hall</Button>
             </Link>
-            <Link to="/dashboard/halls"><Button variant="outline">Back to halls</Button></Link>
+            <Link to="/dashboard/halls" className="flex-1"><Button variant="outline" className="w-full">Back to halls</Button></Link>
           </div>
         </Card>
       </div>
