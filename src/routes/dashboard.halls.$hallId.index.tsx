@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, Pencil, Power, Trash2, Phone, Mail, MapPin, Users, Utensils, Shield, KeyRound, Copy, IndianRupee,
-} from "lucide-react";
+} from "@/components/icons";
 import { toast } from "sonner";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
