@@ -291,10 +291,10 @@ export function HallForm({ mode, existing, onSaved, onCancel }: Props) {
 
 function Section({ number, title, subtitle, children }: { number: number; title: string; subtitle?: string; children: React.ReactNode }) {
   return (
-    <section className="px-6 py-6 border-b last:border-b-0">
+    <section className="px-4 sm:px-6 py-5 sm:py-6 border-b last:border-b-0">
       <div className="flex items-start gap-3 mb-5">
         <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-bold">{number}</span>
-        <div>
+        <div className="min-w-0">
           <h3 className="text-base font-semibold leading-tight">{title}</h3>
           {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
         </div>
