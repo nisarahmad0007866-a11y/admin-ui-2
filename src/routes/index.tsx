@@ -51,17 +51,17 @@ function LoginPage() {
             <Building2 className="h-5 w-5 text-sidebar" />
           </div>
           <div>
-            <div className="font-serif text-xl">BookMyHall</div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-gold">Admin Console</div>
+            <div className="text-base font-semibold tracking-tight">BookMyHall</div>
+            <div className="text-[10px] uppercase tracking-[0.25em] text-gold font-medium mt-0.5">Admin Console</div>
           </div>
         </div>
 
         <div className="relative z-10 max-w-md">
-          <div className="text-gold text-xs uppercase tracking-[0.3em] mb-4">Operations</div>
-          <h1 className="font-serif text-5xl leading-[1.05] mb-6">
+          <div className="text-gold text-[11px] uppercase tracking-[0.2em] mb-4 font-medium">Operations Console</div>
+          <h1 className="text-4xl font-semibold tracking-tight leading-[1.1] mb-5">
             Manage every hall.<br />Confirm every booking.
           </h1>
-          <p className="text-sidebar-foreground/70 leading-relaxed">
+          <p className="text-sidebar-foreground/70 leading-relaxed text-sm">
             A single, professional console to add halls, issue owner credentials,
             review bookings and support customers — all in one place.
           </p>
@@ -83,13 +83,13 @@ function LoginPage() {
               <Building2 className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <div className="font-serif text-xl">BookMyHall</div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Admin Console</div>
+              <div className="text-base font-semibold tracking-tight">BookMyHall</div>
+              <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground font-medium mt-0.5">Admin Console</div>
             </div>
           </div>
 
           <div className="mb-8">
-            <h2 className="font-serif text-3xl mb-2">Sign in</h2>
+            <h2 className="text-2xl font-semibold tracking-tight mb-1.5">Sign in</h2>
             <p className="text-sm text-muted-foreground">Use your admin email and password to continue.</p>
           </div>
 

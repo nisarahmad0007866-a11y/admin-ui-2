@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { PageHeader } from "@/components/page-header";
 
 export const Route = createFileRoute("/dashboard/bookings/")({
   component: BookingsListPage,
@@ -38,20 +39,19 @@ function BookingsListPage() {
   };
 
   return (
-    <div className="p-6 lg:p-10 max-w-[1400px] mx-auto space-y-6">
-      <div>
-        <div className="text-xs uppercase tracking-[0.25em] text-gold mb-2">Operations</div>
-        <h1 className="font-serif text-4xl">Bookings</h1>
-        <p className="text-muted-foreground mt-1">Review, confirm or reject bookings across all halls.</p>
-      </div>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto">
+      <PageHeader
+        title="Bookings"
+        description="Review, confirm or reject bookings across all halls."
+      />
 
-      <Card className="p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+      <Card className="p-3 sm:p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-5">
         <div className="relative flex-1">
           <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by customer, hall, phone…" className="pl-10 h-10" />
+          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by customer, hall, phone…" className="pl-9 h-10" />
         </div>
-        <Tabs value={tab} onValueChange={v => setTab(v as typeof tab)}>
-          <TabsList>
+        <Tabs value={tab} onValueChange={v => setTab(v as typeof tab)} className="overflow-x-auto">
+          <TabsList className="w-max">
             <TabsTrigger value="all">All <span className="ml-1.5 text-xs opacity-60">{counts.all}</span></TabsTrigger>
             <TabsTrigger value="pending">Pending <span className="ml-1.5 text-xs opacity-60">{counts.pending}</span></TabsTrigger>
             <TabsTrigger value="confirmed">Confirmed <span className="ml-1.5 text-xs opacity-60">{counts.confirmed}</span></TabsTrigger>
@@ -61,7 +61,33 @@ function BookingsListPage() {
         </Tabs>
       </Card>
 
-      <Card className="overflow-hidden">
+      {/* Mobile cards */}
+      <div className="sm:hidden space-y-2">
+        {filtered.length === 0 && <Card className="p-8 text-center text-sm text-muted-foreground">No bookings.</Card>}
+        {filtered.map(b => {
+          const hall = halls.find(h => h.id === b.hallId);
+          return (
+            <Link key={b.id} to="/dashboard/bookings/$bookingId" params={{ bookingId: b.id }}>
+              <Card className="p-4 active:bg-muted/40">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{b.customerName}</div>
+                    <div className="text-xs text-muted-foreground truncate">{hall?.name ?? "—"}</div>
+                  </div>
+                  <StatusBadge status={b.status} />
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{new Date(b.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} · {b.session}</span>
+                  <span className="font-medium text-foreground tabular-nums">{formatINR(b.amount)}</span>
+                </div>
+              </Card>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Desktop table */}
+      <Card className="overflow-hidden hidden sm:block">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
@@ -91,7 +117,7 @@ function BookingsListPage() {
                     <td className="px-4 py-3">{hall?.name ?? "—"}</td>
                     <td className="px-4 py-3">{new Date(b.date).toLocaleDateString("en-IN", { dateStyle: "medium" })}</td>
                     <td className="px-4 py-3 capitalize">{b.session}</td>
-                    <td className="px-4 py-3 text-right font-medium">{formatINR(b.amount)}</td>
+                    <td className="px-4 py-3 text-right font-medium tabular-nums">{formatINR(b.amount)}</td>
                     <td className="px-4 py-3"><StatusBadge status={b.status} /></td>
                   </tr>
                 );

@@ -40,21 +40,21 @@ function HallDetailPage() {
   const copy = (t: string, l: string) => { navigator.clipboard.writeText(t); toast.success(`${l} copied`); };
 
   return (
-    <div className="p-6 lg:p-10 max-w-[1400px] mx-auto space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto space-y-5">
       <Link to="/dashboard/halls" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-4 w-4 mr-1" /> Back to halls
       </Link>
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
             <Badge className="bg-primary text-primary-foreground border-0">{hallTypeLabel(hall.type)}</Badge>
             {hall.active
               ? <Badge variant="outline" className="border-success/40 text-success bg-success/10">Active</Badge>
               : <Badge variant="outline" className="border-muted-foreground/30 text-muted-foreground">Inactive</Badge>}
           </div>
-          <h1 className="font-serif text-4xl">{hall.name}</h1>
-          <div className="text-muted-foreground mt-1 flex items-center gap-1 text-sm"><MapPin className="h-3.5 w-3.5" />{hall.address}, {hall.city}</div>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">{hall.name}</h1>
+          <div className="text-muted-foreground mt-1 flex items-center gap-1 text-sm"><MapPin className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{hall.address}, {hall.city}</span></div>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link to="/dashboard/halls/$hallId/edit" params={{ hallId: hall.id }}>
@@ -82,52 +82,52 @@ function HallDetailPage() {
       </div>
 
       {/* Owner credentials */}
-      <Card className="p-6 bg-sidebar text-sidebar-foreground border-0">
+      <Card className="p-5 sm:p-6 bg-sidebar text-sidebar-foreground border-0">
         <div className="flex items-center gap-2 mb-4">
           <KeyRound className="h-4 w-4 text-gold" />
-          <span className="text-xs uppercase tracking-[0.25em] text-gold">Owner Credentials</span>
+          <span className="text-[11px] uppercase tracking-wider text-gold font-medium">Owner Credentials</span>
         </div>
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6">
           <div>
-            <div className="text-xs text-sidebar-foreground/60 uppercase mb-1">Owner ID (8-digit)</div>
+            <div className="text-[11px] text-sidebar-foreground/60 uppercase mb-1">Owner ID</div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-2xl">{hall.ownerId}</span>
-              <button onClick={() => copy(hall.ownerId, "Owner ID")} className="text-sidebar-foreground/60 hover:text-gold"><Copy className="h-4 w-4" /></button>
+              <span className="font-mono text-lg sm:text-2xl">{hall.ownerId}</span>
+              <button onClick={() => copy(hall.ownerId, "Owner ID")} className="text-sidebar-foreground/60 hover:text-gold shrink-0"><Copy className="h-4 w-4" /></button>
             </div>
           </div>
           <div>
-            <div className="text-xs text-sidebar-foreground/60 uppercase mb-1">PIN (4-digit)</div>
+            <div className="text-[11px] text-sidebar-foreground/60 uppercase mb-1">PIN</div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-2xl text-gold">{hall.ownerPin}</span>
-              <button onClick={() => copy(hall.ownerPin, "PIN")} className="text-sidebar-foreground/60 hover:text-gold"><Copy className="h-4 w-4" /></button>
+              <span className="font-mono text-lg sm:text-2xl text-gold">{hall.ownerPin}</span>
+              <button onClick={() => copy(hall.ownerPin, "PIN")} className="text-sidebar-foreground/60 hover:text-gold shrink-0"><Copy className="h-4 w-4" /></button>
             </div>
           </div>
         </div>
       </Card>
 
       {/* Photos */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="font-serif text-xl mb-4">Indoor photos</h3>
+      <div className="grid lg:grid-cols-2 gap-5">
+        <Card className="p-5 sm:p-6">
+          <h3 className="text-base font-semibold mb-4">Indoor photos</h3>
           {hall.indoorImages.length === 0 ? <p className="text-sm text-muted-foreground">No indoor photos.</p> : (
             <div className="grid grid-cols-2 gap-3">
-              {hall.indoorImages.map((src, i) => <img key={i} src={src} alt={`Indoor ${i+1}`} className="aspect-[4/3] object-cover rounded-md w-full" />)}
+              {hall.indoorImages.map((src, i) => <img key={i} src={src} alt={`Indoor ${i+1}`} loading="lazy" className="aspect-[4/3] object-cover rounded-md w-full" />)}
             </div>
           )}
         </Card>
-        <Card className="p-6">
-          <h3 className="font-serif text-xl mb-4">Outdoor photos</h3>
+        <Card className="p-5 sm:p-6">
+          <h3 className="text-base font-semibold mb-4">Outdoor photos</h3>
           {hall.outdoorImages.length === 0 ? <p className="text-sm text-muted-foreground">No outdoor photos.</p> : (
             <div className="grid grid-cols-2 gap-3">
-              {hall.outdoorImages.map((src, i) => <img key={i} src={src} alt={`Outdoor ${i+1}`} className="aspect-[4/3] object-cover rounded-md w-full" />)}
+              {hall.outdoorImages.map((src, i) => <img key={i} src={src} alt={`Outdoor ${i+1}`} loading="lazy" className="aspect-[4/3] object-cover rounded-md w-full" />)}
             </div>
           )}
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <Card className="p-6 lg:col-span-2 space-y-5">
-          <h3 className="font-serif text-xl">Details</h3>
+      <div className="grid lg:grid-cols-3 gap-5">
+        <Card className="p-5 sm:p-6 lg:col-span-2 space-y-5">
+          <h3 className="text-base font-semibold">Details</h3>
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <Info icon={Users} label="Capacity" value={`${hall.guests} guests`} />
             <Info icon={Utensils} label="Food" value={hall.foodType === "both" ? "Veg & Non-Veg" : hall.foodType === "veg" ? "Vegetarian" : "Non-Vegetarian"} />
@@ -135,29 +135,30 @@ function HallDetailPage() {
             <Info icon={IndianRupee} label="Night price" value={formatINR(hall.priceNight)} />
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Facilities</div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-2">Facilities</div>
             <div className="flex flex-wrap gap-2">
+              {hall.facilities.length === 0 && <span className="text-sm text-muted-foreground">—</span>}
               {hall.facilities.map(f => <Badge key={f} variant="secondary">{f}</Badge>)}
             </div>
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1"><Shield className="h-3 w-3" />Policies</div>
-            <p className="text-sm leading-relaxed">{hall.policies}</p>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-2 flex items-center gap-1"><Shield className="h-3 w-3" />Policies</div>
+            <p className="text-sm leading-relaxed whitespace-pre-line">{hall.policies || "—"}</p>
           </div>
         </Card>
 
-        <Card className="p-6 space-y-4">
-          <h3 className="font-serif text-xl">Owner & Support</h3>
+        <Card className="p-5 sm:p-6 space-y-4">
+          <h3 className="text-base font-semibold">Owner & Support</h3>
           <Info icon={Users} label="Owner" value={hall.ownerName} />
-          <Info icon={Mail} label="Email" value={hall.ownerEmail} />
+          <Info icon={Mail} label="Email" value={hall.ownerEmail || "—"} />
           <Info icon={Phone} label="Owner phone" value={hall.ownerNumber} />
           <Info icon={Phone} label="Support" value={hall.supportNumber} />
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="font-serif text-xl mb-4">Upcoming bookings</h3>
+      <div className="grid lg:grid-cols-2 gap-5">
+        <Card className="p-5 sm:p-6">
+          <h3 className="text-base font-semibold mb-4">Upcoming bookings</h3>
           {upcoming.length === 0 ? <p className="text-sm text-muted-foreground">No upcoming bookings.</p> : (
             <div className="divide-y">
               {upcoming.map(b => (
@@ -172,8 +173,8 @@ function HallDetailPage() {
             </div>
           )}
         </Card>
-        <Card className="p-6">
-          <h3 className="font-serif text-xl mb-4">Date availability</h3>
+        <Card className="p-5 sm:p-6">
+          <h3 className="text-base font-semibold mb-4">Date availability</h3>
           {allDates.length === 0 ? <p className="text-sm text-muted-foreground">All dates available.</p> : (
             <div className="space-y-2">
               {allDates.map((d, i) => (
@@ -195,10 +196,10 @@ function HallDetailPage() {
 function Info({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
     <div className="flex items-start gap-3">
-      <Icon className="h-4 w-4 text-muted-foreground mt-0.5" />
-      <div>
-        <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
-        <div className="text-sm font-medium">{value}</div>
+      <Icon className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+      <div className="min-w-0">
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">{label}</div>
+        <div className="text-sm font-medium truncate">{value}</div>
       </div>
     </div>
   );

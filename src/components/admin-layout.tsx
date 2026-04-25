@@ -35,8 +35,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           <Building2 className="h-5 w-5 text-sidebar" />
         </div>
         <div>
-          <div className="font-serif text-lg leading-none">BookMyHall</div>
-          <div className="text-[10px] uppercase tracking-[0.2em] text-gold mt-1">Admin</div>
+          <div className="text-base font-semibold tracking-tight leading-none">BookMyHall</div>
+          <div className="text-[10px] uppercase tracking-[0.2em] text-gold font-medium mt-1">Admin</div>
         </div>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
@@ -92,7 +92,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           <button onClick={() => setOpen(true)} aria-label="Menu" className="p-2 -ml-2">
             <Menu className="h-5 w-5" />
           </button>
-          <div className="font-serif text-lg">BookMyHall <span className="text-gold text-xs uppercase tracking-widest ml-1">Admin</span></div>
+          <div className="text-base font-semibold tracking-tight">BookMyHall <span className="text-gold text-[10px] uppercase tracking-widest ml-1 font-medium">Admin</span></div>
           <div className="w-9" />
         </header>
         <main className="flex-1 min-w-0">{children}</main>
