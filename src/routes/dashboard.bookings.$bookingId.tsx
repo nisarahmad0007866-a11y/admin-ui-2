@@ -29,23 +29,23 @@ function BookingDetailPage() {
   const setStatus = (s: typeof b.status, msg: string) => { store.setBookingStatus(b.id, s); toast.success(msg); };
 
   return (
-    <div className="p-6 lg:p-10 max-w-4xl mx-auto space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto space-y-5">
       <Link to="/dashboard/bookings" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-4 w-4 mr-1" /> Back to bookings
       </Link>
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="text-xs uppercase tracking-[0.25em] text-gold mb-2">Booking · #{b.id.slice(0, 8)}</div>
-          <h1 className="font-serif text-4xl">{b.customerName}</h1>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-xs text-muted-foreground mb-1.5 font-mono">#{b.id.slice(0, 8)}</div>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">{b.customerName}</h1>
           <div className="text-muted-foreground mt-1 text-sm">Created {new Date(b.createdAt).toLocaleString("en-IN")}</div>
         </div>
         <StatusBadge status={b.status} large />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card className="p-6 space-y-4">
-          <h3 className="font-serif text-xl">Customer</h3>
+      <div className="grid md:grid-cols-2 gap-5">
+        <Card className="p-5 sm:p-6 space-y-4">
+          <h3 className="text-base font-semibold">Customer</h3>
           <Row icon={Users} label="Name" value={b.customerName} />
           <Row icon={Mail} label="Email" value={b.customerEmail} />
           <Row icon={Phone} label="Phone" value={b.customerPhone} />
@@ -57,8 +57,8 @@ function BookingDetailPage() {
           )}
         </Card>
 
-        <Card className="p-6 space-y-4">
-          <h3 className="font-serif text-xl">Booking</h3>
+        <Card className="p-5 sm:p-6 space-y-4">
+          <h3 className="text-base font-semibold">Booking</h3>
           <Row icon={Building2} label="Hall" value={hall?.name ?? "—"} link={hall ? { to: "/dashboard/halls/$hallId" as const, params: { hallId: hall.id } } : undefined} />
           <Row icon={Calendar} label="Date & Session" value={`${new Date(b.date).toLocaleDateString("en-IN", { dateStyle: "full" })} · ${b.session}`} />
           <Row icon={Users} label="Guests" value={`${b.guests}`} />
@@ -66,8 +66,8 @@ function BookingDetailPage() {
         </Card>
       </div>
 
-      <Card className="p-6">
-        <h3 className="font-serif text-xl mb-4">Manage status</h3>
+      <Card className="p-5 sm:p-6">
+        <h3 className="text-base font-semibold mb-4">Manage status</h3>
         <div className="flex flex-wrap gap-3">
           {b.status !== "confirmed" && (
             <Button onClick={() => setStatus("confirmed", "Booking confirmed")} className="bg-success hover:bg-success/90 text-white">
@@ -93,8 +93,8 @@ function BookingDetailPage() {
       </Card>
 
       {hall && (
-        <Card className="p-6">
-          <h3 className="font-serif text-xl mb-4">Customer support</h3>
+        <Card className="p-5 sm:p-6">
+          <h3 className="text-base font-semibold mb-4">Customer support</h3>
           <p className="text-sm text-muted-foreground mb-4">For help, share these contacts with the customer:</p>
           <div className="grid sm:grid-cols-2 gap-4">
             <Row icon={Phone} label="Hall support" value={hall.supportNumber} />

@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Mail, Phone, Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { PageHeader } from "@/components/page-header";
 
 export const Route = createFileRoute("/dashboard/customers")({
   component: CustomersPage,
@@ -49,17 +50,16 @@ function CustomersPage() {
   );
 
   return (
-    <div className="p-6 lg:p-10 max-w-[1400px] mx-auto space-y-6">
-      <div>
-        <div className="text-xs uppercase tracking-[0.25em] text-gold mb-2">Support</div>
-        <h1 className="font-serif text-4xl">Customers</h1>
-        <p className="text-muted-foreground mt-1">Look up any customer to provide help with their bookings.</p>
-      </div>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto">
+      <PageHeader
+        title="Customers"
+        description="Look up any customer to help with their bookings."
+      />
 
-      <Card className="p-4">
+      <Card className="p-3 sm:p-4 mb-5">
         <div className="relative">
           <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, email or phone…" className="pl-10 h-10" />
+          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, email or phone…" className="pl-9 h-10" />
         </div>
       </Card>
 
@@ -72,9 +72,9 @@ function CustomersPage() {
             const lastHall = lastBooking ? halls.find(h => h.id === lastBooking.hallId) : undefined;
             return (
               <Link key={c.email} to="/dashboard/bookings/$bookingId" params={{ bookingId: c.lastBookingId }}>
-                <Card className="p-5 hover:shadow-md transition-shadow h-full">
+                <Card className="p-4 sm:p-5 hover:shadow-md transition-shadow h-full">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-serif text-lg">
+                    <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-base font-semibold">
                       {c.name[0]?.toUpperCase()}
                     </div>
                     <div className="min-w-0">

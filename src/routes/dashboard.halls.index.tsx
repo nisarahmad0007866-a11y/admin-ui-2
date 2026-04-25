@@ -13,6 +13,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageHeader } from "@/components/page-header";
 
 export const Route = createFileRoute("/dashboard/halls/")({
   component: HallsListPage,
@@ -33,25 +34,24 @@ function HallsListPage() {
   }, [halls, q, filter]);
 
   return (
-    <div className="p-6 lg:p-10 max-w-[1400px] mx-auto space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <div className="text-xs uppercase tracking-[0.25em] text-gold mb-2">Inventory</div>
-          <h1 className="font-serif text-4xl">Halls</h1>
-          <p className="text-muted-foreground mt-1">Add, edit, activate or remove halls.</p>
-        </div>
-        <Link to="/dashboard/halls/new">
-          <Button className="bg-primary hover:bg-primary/90"><Plus className="h-4 w-4 mr-2" />Add Hall</Button>
-        </Link>
-      </div>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto">
+      <PageHeader
+        title="Halls"
+        description="Add, edit, activate or remove halls."
+        actions={
+          <Link to="/dashboard/halls/new">
+            <Button size="sm" className="bg-primary hover:bg-primary/90"><Plus className="h-4 w-4 mr-1.5" />Add hall</Button>
+          </Link>
+        }
+      />
 
-      <Card className="p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+      <Card className="p-3 sm:p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-5">
         <div className="relative flex-1">
           <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, city or owner…" className="pl-10 h-10" />
+          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name, city or owner…" className="pl-9 h-10" />
         </div>
-        <Tabs value={filter} onValueChange={v => setFilter(v as typeof filter)}>
-          <TabsList>
+        <Tabs value={filter} onValueChange={v => setFilter(v as typeof filter)} className="overflow-x-auto">
+          <TabsList className="w-max">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="wedding">Wedding</TabsTrigger>
             <TabsTrigger value="lawn">Lawn</TabsTrigger>
@@ -62,16 +62,16 @@ function HallsListPage() {
       </Card>
 
       {filtered.length === 0 && (
-        <Card className="p-16 text-center">
-          <div className="font-serif text-2xl mb-2">No halls found</div>
+        <Card className="p-12 text-center">
+          <div className="text-lg font-semibold mb-2">No halls found</div>
           <p className="text-sm text-muted-foreground mb-6">Try a different search, or add your first hall.</p>
           <Link to="/dashboard/halls/new">
-            <Button><Plus className="h-4 w-4 mr-2" />Add Hall</Button>
+            <Button><Plus className="h-4 w-4 mr-2" />Add hall</Button>
           </Link>
         </Card>
       )}
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {filtered.map(h => {
           const cover = h.indoorImages[0] || h.outdoorImages[0];
           return (
@@ -87,12 +87,12 @@ function HallsListPage() {
                   {!h.active && <Badge variant="outline" className="bg-background/95">Inactive</Badge>}
                 </div>
               </div>
-              <div className="p-5 flex-1 flex flex-col">
-                <div className="font-serif text-xl mb-1 truncate">{h.name}</div>
+              <div className="p-4 sm:p-5 flex-1 flex flex-col">
+                <div className="text-base font-semibold mb-1 truncate">{h.name}</div>
                 <div className="text-xs text-muted-foreground flex items-center gap-1 mb-3">
-                  <MapPin className="h-3 w-3" /> <span className="truncate">{h.address}, {h.city}</span>
+                  <MapPin className="h-3 w-3 shrink-0" /> <span className="truncate">{h.address}, {h.city}</span>
                 </div>
-                <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground mb-4">
                   <span className="flex items-center gap-1"><Users className="h-3 w-3" />{h.guests}</span>
                   <span>Day {formatINR(h.priceDay)}</span>
                   <span>Night {formatINR(h.priceNight)}</span>
