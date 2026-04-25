@@ -29,17 +29,17 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   };
 
   const SidebarInner = (
-    <aside className="flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-sidebar-border">
-        <div className="h-8 w-8 rounded-md bg-gold flex items-center justify-center">
-          <Building2 className="h-4 w-4 text-gold-foreground" />
+    <aside className="flex h-full w-60 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
+      <div className="flex items-center gap-2.5 px-4 h-14 border-b border-sidebar-border">
+        <div className="h-7 w-7 rounded bg-primary flex items-center justify-center">
+          <Building2 className="h-3.5 w-3.5 text-primary-foreground" />
         </div>
-        <div className="text-sm font-semibold tracking-tight leading-none">
+        <div className="text-[13px] font-semibold tracking-tight leading-none">
           BookMyHall
-          <div className="text-[9px] uppercase tracking-[0.22em] text-sidebar-foreground/45 font-medium mt-1">Admin Panel</div>
+          <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground font-medium mt-1">Admin</div>
         </div>
       </div>
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-2 py-3 space-y-0.5">
         {nav.map(item => {
           const active = item.exact ? path === item.to : path.startsWith(item.to);
           const Icon = item.icon;
@@ -49,26 +49,26 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
               to={item.to}
               onClick={() => setOpen(false)}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-2.5 rounded px-2.5 py-1.5 text-[13px] font-medium transition-colors",
                 active
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-2 border-gold"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground",
               )}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className={cn("h-4 w-4", active ? "text-primary" : "")} />
               {item.label}
             </Link>
           );
         })}
       </nav>
-      <div className="px-3 py-4 border-t border-sidebar-border space-y-2">
+      <div className="px-2 py-3 border-t border-sidebar-border space-y-1">
         <Link to="/dashboard/halls/new" onClick={() => setOpen(false)}>
-          <Button className="w-full bg-gold text-gold-foreground hover:bg-gold/90 font-medium">
-            <Plus className="h-4 w-4 mr-2" /> Add Hall
+          <Button size="sm" className="w-full h-8 text-[13px] font-medium">
+            <Plus className="h-3.5 w-3.5 mr-1.5" /> Add Hall
           </Button>
         </Link>
-        <Button variant="ghost" onClick={onLogout} className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent">
-          <LogOut className="h-4 w-4 mr-2" /> Sign out
+        <Button variant="ghost" size="sm" onClick={onLogout} className="w-full h-8 justify-start text-[13px] text-muted-foreground hover:text-foreground">
+          <LogOut className="h-3.5 w-3.5 mr-1.5" /> Sign out
         </Button>
       </div>
     </aside>
