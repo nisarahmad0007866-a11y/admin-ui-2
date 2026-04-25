@@ -4,7 +4,7 @@ import { formatINR, store } from "@/lib/store";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Mail, Phone, Calendar, Users, Building2, Check, X, CheckCheck } from "lucide-react";
+import { ArrowLeft, Mail, Phone, Calendar, Users, Building2, Check, X, CheckCheck } from "@/components/icons";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/bookings/$bookingId")({
