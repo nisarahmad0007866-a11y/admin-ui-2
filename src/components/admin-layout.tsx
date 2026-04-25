@@ -92,7 +92,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           <button onClick={() => setOpen(true)} aria-label="Menu" className="p-2 -ml-2">
             <Menu className="h-5 w-5" />
           </button>
-          <div className="text-base font-semibold tracking-tight">BookMyHall <span className="text-gold text-[10px] uppercase tracking-widest ml-1 font-medium">Admin</span></div>
+          <div className="text-sm font-semibold tracking-tight">BookMyHall <span className="text-muted-foreground text-[10px] uppercase tracking-[0.14em] ml-1 font-medium">Admin</span></div>
           <div className="w-9" />
         </header>
         <main className="flex-1 min-w-0">{children}</main>
