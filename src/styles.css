@@ -159,7 +159,7 @@
     font-feature-settings: "cv11", "ss01";
   }
 
-  h1, h2, h3, .font-serif {
+  .font-serif {
     font-family: var(--font-serif);
     letter-spacing: -0.02em;
   }
