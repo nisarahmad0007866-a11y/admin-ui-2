@@ -1,8 +1,8 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
 import { LayoutDashboard, Building2, CalendarCheck, Users, LogOut, Plus, Menu } from "@/components/icons";
 import { auth } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
