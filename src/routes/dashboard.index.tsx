@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useHalls, useBookings } from "@/hooks/use-store";
 import { formatINR, hallTypeLabel } from "@/lib/store";
 import { Card } from "@/components/ui/card";
-import { Building2, CalendarCheck, Clock, IndianRupee, ArrowRight, CheckCircle2, XCircle, Plus } from "@/components/icons";
+import { Building2, CalendarCheck, Clock, IndianRupee, ArrowRight, CheckCircle2, XCircle, Plus, TrendingUp } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/dashboard/")({
   component: Overview,
@@ -21,6 +22,31 @@ function Overview() {
   const activeHalls = halls.filter(h => h.active).length;
 
   const recent = [...bookings].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
+
+  // Last 6 months revenue (confirmed + completed)
+  const monthly = useMemo(() => {
+    const now = new Date();
+    const buckets: { label: string; key: string; total: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      buckets.push({
+        label: d.toLocaleDateString("en-IN", { month: "short" }),
+        key: `${d.getFullYear()}-${d.getMonth()}`,
+        total: 0,
+      });
+    }
+    bookings.forEach(b => {
+      if (b.status !== "confirmed" && b.status !== "completed") return;
+      const d = new Date(b.date);
+      const k = `${d.getFullYear()}-${d.getMonth()}`;
+      const bucket = buckets.find(x => x.key === k);
+      if (bucket) bucket.total += b.amount;
+    });
+    return buckets;
+  }, [bookings]);
+
+  const maxMonthly = Math.max(1, ...monthly.map(m => m.total));
+  const totalLast6 = monthly.reduce((s, m) => s + m.total, 0);
 
   const stats = [
     { label: "Active Halls", value: `${activeHalls}/${halls.length}`, icon: Building2, accent: "text-info" },
