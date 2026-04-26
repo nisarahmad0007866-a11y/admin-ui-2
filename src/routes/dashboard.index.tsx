@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useHalls, useBookings } from "@/hooks/use-store";
 import { formatINR, hallTypeLabel } from "@/lib/store";
 import { Card } from "@/components/ui/card";
-import { Building2, CalendarCheck, Clock, IndianRupee, ArrowRight, CheckCircle2, XCircle, Plus } from "@/components/icons";
+import { Building2, CalendarCheck, Clock, IndianRupee, ArrowRight, CheckCircle2, XCircle, Plus, TrendingUp } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/dashboard/")({
   component: Overview,
@@ -21,6 +22,31 @@ function Overview() {
   const activeHalls = halls.filter(h => h.active).length;
 
   const recent = [...bookings].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
+
+  // Last 6 months revenue (confirmed + completed)
+  const monthly = useMemo(() => {
+    const now = new Date();
+    const buckets: { label: string; key: string; total: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      buckets.push({
+        label: d.toLocaleDateString("en-IN", { month: "short" }),
+        key: `${d.getFullYear()}-${d.getMonth()}`,
+        total: 0,
+      });
+    }
+    bookings.forEach(b => {
+      if (b.status !== "confirmed" && b.status !== "completed") return;
+      const d = new Date(b.date);
+      const k = `${d.getFullYear()}-${d.getMonth()}`;
+      const bucket = buckets.find(x => x.key === k);
+      if (bucket) bucket.total += b.amount;
+    });
+    return buckets;
+  }, [bookings]);
+
+  const maxMonthly = Math.max(1, ...monthly.map(m => m.total));
+  const totalLast6 = monthly.reduce((s, m) => s + m.total, 0);
 
   const stats = [
     { label: "Active Halls", value: `${activeHalls}/${halls.length}`, icon: Building2, accent: "text-info" },
@@ -55,6 +81,42 @@ function Overview() {
           );
         })}
       </div>
+
+      <Card className="p-4 sm:p-6 mt-4 sm:mt-6">
+        <div className="flex items-end justify-between mb-4 gap-3 flex-wrap">
+          <div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <h2 className="text-base font-semibold">Revenue trend</h2>
+            </div>
+            <div className="text-xs text-muted-foreground mt-0.5">Confirmed + completed · last 6 months</div>
+          </div>
+          <div className="text-right">
+            <div className="text-lg sm:text-xl font-semibold tabular-nums">{formatINR(totalLast6)}</div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">6-month total</div>
+          </div>
+        </div>
+        <div className="flex items-end gap-2 sm:gap-4 h-32 sm:h-40">
+          {monthly.map(m => {
+            const pct = (m.total / maxMonthly) * 100;
+            return (
+              <div key={m.key} className="flex-1 flex flex-col items-center gap-2 min-w-0">
+                <div className="text-[10px] sm:text-xs font-medium tabular-nums text-muted-foreground truncate w-full text-center">
+                  {m.total > 0 ? `₹${(m.total / 100000).toFixed(1)}L` : "—"}
+                </div>
+                <div className="w-full flex-1 flex items-end">
+                  <div
+                    className="w-full rounded-t-md bg-gradient-to-t from-primary to-primary/60 transition-all"
+                    style={{ height: `${Math.max(pct, 2)}%` }}
+                    title={formatINR(m.total)}
+                  />
+                </div>
+                <div className="text-[11px] sm:text-xs text-muted-foreground font-medium">{m.label}</div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
 
       <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
         <Card className="lg:col-span-2 p-4 sm:p-6">
