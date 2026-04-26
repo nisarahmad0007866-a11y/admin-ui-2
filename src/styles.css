@@ -156,6 +156,16 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "cv11", "ss01";
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (min-width: 640px) {
+    body {
+      font-size: 15px;
+      line-height: 1.5;
+    }
   }
 
   .font-serif {
