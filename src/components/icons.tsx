@@ -29,6 +29,11 @@ export const ArrowRight = icon("ArrowRight", <><path d="M5 12h14" /><path d="m12
 export const Building2 = icon("Building2", <><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18" /><path d="M4 22h16" /><path d="M10 6h.01M14 6h.01M10 10h.01M14 10h.01M10 14h.01M14 14h.01" /></>);
 export const Calendar = icon("Calendar", <><path d="M8 2v4M16 2v4" /><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 10h18" /></>);
 export const CalendarCheck = icon("CalendarCheck", <><path d="M8 2v4M16 2v4" /><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M3 10h18" /><path d="m9 16 2 2 4-4" /></>);
+export const ChevronLeft = icon("ChevronLeft", <path d="m15 18-6-6 6-6" />);
+export const ChevronRight = icon("ChevronRight", <path d="m9 18 6-6-6-6" />);
+export const Download = icon("Download", <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /></>);
+export const List = icon("List", <><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></>);
+export const TrendingUp = icon("TrendingUp", <><path d="m3 17 6-6 4 4 8-8" /><path d="M14 7h7v7" /></>);
 export const Car = icon("Car", <><path d="M5 17h14l-1.5-5.5A2 2 0 0 0 15.6 10H8.4a2 2 0 0 0-1.9 1.5L5 17Z" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M5 14h14" /></>);
 export const Check = icon("Check", <path d="m20 6-11 11-5-5" />);
 export const CheckCheck = icon("CheckCheck", <><path d="m18 6-9 9-4-4" /><path d="m22 10-8.5 8.5L12 17" /></>);
