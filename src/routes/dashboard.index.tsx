@@ -82,6 +82,42 @@ function Overview() {
         })}
       </div>
 
+      <Card className="p-4 sm:p-6 mt-4 sm:mt-6">
+        <div className="flex items-end justify-between mb-4 gap-3 flex-wrap">
+          <div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <h2 className="text-base font-semibold">Revenue trend</h2>
+            </div>
+            <div className="text-xs text-muted-foreground mt-0.5">Confirmed + completed · last 6 months</div>
+          </div>
+          <div className="text-right">
+            <div className="text-lg sm:text-xl font-semibold tabular-nums">{formatINR(totalLast6)}</div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">6-month total</div>
+          </div>
+        </div>
+        <div className="flex items-end gap-2 sm:gap-4 h-32 sm:h-40">
+          {monthly.map(m => {
+            const pct = (m.total / maxMonthly) * 100;
+            return (
+              <div key={m.key} className="flex-1 flex flex-col items-center gap-2 min-w-0">
+                <div className="text-[10px] sm:text-xs font-medium tabular-nums text-muted-foreground truncate w-full text-center">
+                  {m.total > 0 ? `₹${(m.total / 100000).toFixed(1)}L` : "—"}
+                </div>
+                <div className="w-full flex-1 flex items-end">
+                  <div
+                    className="w-full rounded-t-md bg-gradient-to-t from-primary to-primary/60 transition-all"
+                    style={{ height: `${Math.max(pct, 2)}%` }}
+                    title={formatINR(m.total)}
+                  />
+                </div>
+                <div className="text-[11px] sm:text-xs text-muted-foreground font-medium">{m.label}</div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
       <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
         <Card className="lg:col-span-2 p-4 sm:p-6">
           <div className="flex items-center justify-between mb-4">
