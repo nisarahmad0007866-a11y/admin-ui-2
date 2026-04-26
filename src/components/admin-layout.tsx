@@ -1,8 +1,8 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
 import { LayoutDashboard, Building2, CalendarCheck, Users, LogOut, Plus, Menu } from "@/components/icons";
 import { auth } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -20,8 +20,21 @@ const nav: NavItem[] = [
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
+  const router = useRouter();
   const path = useRouterState({ select: s => s.location.pathname });
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => window.setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 } as IdleDeadline), 250));
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
+    const id = idle(() => {
+      router.preloadRoute({ to: "/dashboard" });
+      router.preloadRoute({ to: "/dashboard/halls" });
+      router.preloadRoute({ to: "/dashboard/bookings" });
+      router.preloadRoute({ to: "/dashboard/customers" });
+    });
+    return () => cancel(id as number);
+  }, [router]);
 
   const onLogout = () => {
     auth.logout();

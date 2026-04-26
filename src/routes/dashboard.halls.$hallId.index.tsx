@@ -7,11 +7,8 @@ import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, Pencil, Power, Trash2, Phone, Mail, MapPin, Users, Utensils, Shield, KeyRound, Copy, IndianRupee,
 } from "@/components/icons";
+import { HallBookingCalendar } from "@/components/hall-booking-calendar";
 import { toast } from "sonner";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/dashboard/halls/$hallId/")({
   component: HallDetailPage,
@@ -27,7 +24,7 @@ function HallDetailPage() {
   if (!hall) {
     return (
       <div className="p-10 text-center">
-        <h2 className="font-serif text-3xl mb-3">Hall not found</h2>
+        <h2 className="text-3xl font-semibold mb-3">Hall not found</h2>
         <Link to="/dashboard/halls"><Button variant="outline">Back to halls</Button></Link>
       </div>
     );
@@ -35,9 +32,15 @@ function HallDetailPage() {
 
   const hallBookings = bookings.filter(b => b.hallId === hall.id);
   const upcoming = hallBookings.filter(b => new Date(b.date) >= new Date(new Date().toDateString()) && (b.status === "confirmed" || b.status === "pending")).sort((a, b) => a.date.localeCompare(b.date));
-  const allDates = hallBookings.filter(b => b.status !== "rejected").map(b => ({ date: new Date(b.date).toLocaleDateString("en-IN", { dateStyle: "medium" }), session: b.session, status: b.status }));
 
   const copy = (t: string, l: string) => { navigator.clipboard.writeText(t); toast.success(`${l} copied`); };
+
+  const deleteHall = () => {
+    if (!window.confirm(`Delete ${hall.name}? This permanently removes the hall and all related bookings.`)) return;
+    store.deleteHall(hall.id);
+    toast.success("Deleted");
+    navigate({ to: "/dashboard/halls" });
+  };
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto space-y-5">
@@ -63,25 +66,12 @@ function HallDetailPage() {
           <Button variant="outline" onClick={() => { store.toggleActive(hall.id); toast.success(hall.active ? "Deactivated" : "Activated"); }}>
             <Power className="h-4 w-4 mr-2" />{hall.active ? "Deactivate" : "Activate"}
           </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" className="text-destructive hover:text-destructive"><Trash2 className="h-4 w-4 mr-2" />Delete</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete "{hall.name}"?</AlertDialogTitle>
-                <AlertDialogDescription>This permanently removes the hall and all related bookings.</AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => { store.deleteHall(hall.id); toast.success("Deleted"); navigate({ to: "/dashboard/halls" }); }} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <Button variant="outline" className="text-destructive hover:text-destructive" onClick={deleteHall}>
+            <Trash2 className="h-4 w-4 mr-2" />Delete
+          </Button>
         </div>
       </div>
 
-      {/* Owner credentials */}
       <Card className="p-5 sm:p-6 bg-sidebar text-sidebar-foreground border-0">
         <div className="flex items-center gap-2 mb-4">
           <KeyRound className="h-4 w-4 text-gold" />
@@ -105,13 +95,14 @@ function HallDetailPage() {
         </div>
       </Card>
 
-      {/* Photos */}
+      <HallBookingCalendar bookings={hallBookings} />
+
       <div className="grid lg:grid-cols-2 gap-5">
         <Card className="p-5 sm:p-6">
           <h3 className="text-base font-semibold mb-4">Indoor photos</h3>
           {hall.indoorImages.length === 0 ? <p className="text-sm text-muted-foreground">No indoor photos.</p> : (
             <div className="grid grid-cols-2 gap-3">
-              {hall.indoorImages.map((src, i) => <img key={i} src={src} alt={`Indoor ${i+1}`} loading="lazy" className="aspect-[4/3] object-cover rounded-md w-full" />)}
+              {hall.indoorImages.map((src, i) => <img key={i} src={src.replace("w=1200", "w=640")} alt={`Indoor ${i + 1}`} loading="lazy" decoding="async" className="aspect-[4/3] object-cover rounded-md w-full" />)}
             </div>
           )}
         </Card>
@@ -119,7 +110,7 @@ function HallDetailPage() {
           <h3 className="text-base font-semibold mb-4">Outdoor photos</h3>
           {hall.outdoorImages.length === 0 ? <p className="text-sm text-muted-foreground">No outdoor photos.</p> : (
             <div className="grid grid-cols-2 gap-3">
-              {hall.outdoorImages.map((src, i) => <img key={i} src={src} alt={`Outdoor ${i+1}`} loading="lazy" className="aspect-[4/3] object-cover rounded-md w-full" />)}
+              {hall.outdoorImages.map((src, i) => <img key={i} src={src.replace("w=1200", "w=640")} alt={`Outdoor ${i + 1}`} loading="lazy" decoding="async" className="aspect-[4/3] object-cover rounded-md w-full" />)}
             </div>
           )}
         </Card>
@@ -156,39 +147,22 @@ function HallDetailPage() {
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-5">
-        <Card className="p-5 sm:p-6">
-          <h3 className="text-base font-semibold mb-4">Upcoming bookings</h3>
-          {upcoming.length === 0 ? <p className="text-sm text-muted-foreground">No upcoming bookings.</p> : (
-            <div className="divide-y">
-              {upcoming.map(b => (
-                <Link key={b.id} to="/dashboard/bookings/$bookingId" params={{ bookingId: b.id }} className="flex justify-between py-3 hover:bg-muted/40 -mx-2 px-2 rounded-md">
-                  <div>
-                    <div className="font-medium">{b.customerName}</div>
-                    <div className="text-xs text-muted-foreground">{new Date(b.date).toLocaleDateString("en-IN", { dateStyle: "medium" })} · {b.session}</div>
-                  </div>
-                  <Badge variant="outline" className={b.status === "confirmed" ? "border-success/40 text-success bg-success/10" : "border-warning/40 text-warning bg-warning/10"}>{b.status}</Badge>
-                </Link>
-              ))}
-            </div>
-          )}
-        </Card>
-        <Card className="p-5 sm:p-6">
-          <h3 className="text-base font-semibold mb-4">Date availability</h3>
-          {allDates.length === 0 ? <p className="text-sm text-muted-foreground">All dates available.</p> : (
-            <div className="space-y-2">
-              {allDates.map((d, i) => (
-                <div key={i} className="flex justify-between text-sm py-2 border-b last:border-0">
-                  <span>{d.date} <span className="text-muted-foreground">({d.session})</span></span>
-                  <Badge variant="outline" className={d.status === "confirmed" ? "border-destructive/40 text-destructive bg-destructive/5" : "border-warning/40 text-warning bg-warning/5"}>
-                    {d.status === "confirmed" ? "Booked" : "Hold"}
-                  </Badge>
+      <Card className="p-5 sm:p-6">
+        <h3 className="text-base font-semibold mb-4">Upcoming bookings</h3>
+        {upcoming.length === 0 ? <p className="text-sm text-muted-foreground">No upcoming bookings.</p> : (
+          <div className="divide-y">
+            {upcoming.map(b => (
+              <Link key={b.id} to="/dashboard/bookings/$bookingId" params={{ bookingId: b.id }} className="flex justify-between gap-3 py-3 hover:bg-muted/40 -mx-2 px-2 rounded-md">
+                <div className="min-w-0">
+                  <div className="font-medium truncate">{b.customerName}</div>
+                  <div className="text-xs text-muted-foreground">{new Date(b.date).toLocaleDateString("en-IN", { dateStyle: "medium" })} · {b.session}</div>
                 </div>
-              ))}
-            </div>
-          )}
-        </Card>
-      </div>
+                <Badge variant="outline" className={b.status === "confirmed" ? "border-success/40 text-success bg-success/10 shrink-0" : "border-warning/40 text-warning bg-warning/10 shrink-0"}>{b.status}</Badge>
+              </Link>
+            ))}
+          </div>
+        )}
+      </Card>
     </div>
   );
 }
